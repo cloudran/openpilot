@@ -38,7 +38,7 @@ class CarControllerParams:
     # If the max stock LKAS request is <384, add your car to this list.
     elif CP.carFingerprint in (CAR.GENESIS_G80, CAR.GENESIS_G90, CAR.ELANTRA, CAR.IONIQ,
                                CAR.IONIQ_EV_LTD, CAR.SANTA_FE_PHEV_2022, CAR.SONATA_LF, CAR.KIA_FORTE, CAR.KIA_NIRO_PHEV,
-                               CAR.KIA_OPTIMA_H, CAR.KIA_SORENTO):
+                               CAR.KIA_OPTIMA_H, CAR.KIA_SORENTO, CAR.GENESIS_GV70_2021):
       self.STEER_MAX = 255
 
     # these cars have significantly more torque than most HKG; limit to 70% of max
@@ -126,6 +126,7 @@ class CAR:
   GENESIS_G70 = "GENESIS G70 2018"
   GENESIS_G70_2020 = "GENESIS G70 2020"
   GENESIS_GV70_1ST_GEN = "GENESIS GV70 1ST GEN"
+  GENESIS_GV70_2021 = "GENESIS GV70 2021"
   GENESIS_G80 = "GENESIS G80 2017"
   GENESIS_G90 = "GENESIS G90 2017"
   GENESIS_GV80 = "GENESIS GV80 2023"
@@ -259,6 +260,9 @@ CAR_INFO: Dict[str, Optional[Union[HyundaiCarInfo, List[HyundaiCarInfo]]]] = {
   ],
   CAR.GENESIS_G70: HyundaiCarInfo("Genesis G70 2018-19", "All", car_parts=CarParts.common([CarHarness.hyundai_f])),
   CAR.GENESIS_G70_2020: HyundaiCarInfo("Genesis G70 2020", "All", car_parts=CarParts.common([CarHarness.hyundai_f])),
+  CAR.GENESIS_GV70_2021: [
+    HyundaiCarInfo("Genesis GV70 (2.5T Trim) 2021", "All", car_parts=CarParts.common([CarHarness.hyundai_m])),
+  ],
   CAR.GENESIS_GV70_1ST_GEN: [
     HyundaiCarInfo("Genesis GV70 (2.5T Trim) 2022-23", "All", car_parts=CarParts.common([CarHarness.hyundai_l])),
     HyundaiCarInfo("Genesis GV70 (3.5T Trim) 2022-23", "All", car_parts=CarParts.common([CarHarness.hyundai_m])),
@@ -1838,6 +1842,20 @@ FW_VERSIONS = {
       b'\xf1\x00JK1_ SCC FHCUP      1.00 1.00 99110-AR300         ',
     ],
   },
+  CAR.GENESIS_GV70_2021: {
+    (Ecu.cornerRadar, 0x7B7,  None): [
+      b'\xf1\x00JK1 BCW RR 1.00 , 1.01 (s\x94@ \x03ISH',
+    ],
+    (Ecu.fwdRadar, 0x7D0,  None): [
+      b'\xf1\x00JK1_ SCC -----      1.00 1.02 99110-AR100         ',
+    ],
+    (Ecu.hvac, 0x7B3,  None): [
+      b"\xf1\x00JK1   97255-AR011CONTROL ASS'Y-DATC  1.04JK1 DATC(-)1.5       ",
+    ],
+    (Ecu.fwdCamera, 0x7c4,  None): [
+      b'\xf1\x00JK1 MFC  AT KOR LHD 1.00 1.04 99211-AR100 210204',
+    ],
+  },
   CAR.GENESIS_GV60_EV_1ST_GEN: {
     (Ecu.fwdCamera, 0x7c4, None): [
       b'\xf1\x00JW1 MFC  AT USA LHD 1.00 1.02 99211-CU100 211215',
@@ -1899,10 +1917,10 @@ CAN_GEARS = {
   "use_elect_gears": {CAR.KIA_NIRO_EV, CAR.KIA_NIRO_PHEV, CAR.KIA_NIRO_HEV_2021, CAR.KIA_OPTIMA_H, CAR.IONIQ_EV_LTD, CAR.KONA_EV, CAR.IONIQ, CAR.IONIQ_EV_2020, CAR.IONIQ_PHEV, CAR.ELANTRA_HEV_2021, CAR.SONATA_HYBRID, CAR.KONA_HEV, CAR.IONIQ_HEV_2022, CAR.SANTA_FE_HEV_2022, CAR.SANTA_FE_PHEV_2022, CAR.IONIQ_PHEV_2019, CAR.KONA_EV_2022, CAR.KIA_K5_HEV_2020},
 }
 
-CANFD_CAR = {CAR.KIA_EV6, CAR.IONIQ_5, CAR.IONIQ_6, CAR.TUCSON_4TH_GEN, CAR.TUCSON_HYBRID_4TH_GEN, CAR.KIA_SPORTAGE_HYBRID_5TH_GEN, CAR.SANTA_CRUZ_1ST_GEN, CAR.KIA_SPORTAGE_5TH_GEN, CAR.GENESIS_GV70_1ST_GEN, CAR.KIA_SORENTO_PHEV_4TH_GEN, CAR.GENESIS_GV60_EV_1ST_GEN, CAR.KIA_SORENTO_4TH_GEN, CAR.KIA_NIRO_HEV_2ND_GEN, CAR.KIA_NIRO_EV_2ND_GEN, CAR.GENESIS_GV80, CAR.KIA_CARNIVAL_4TH_GEN}
+CANFD_CAR = {CAR.KIA_EV6, CAR.IONIQ_5, CAR.IONIQ_6, CAR.TUCSON_4TH_GEN, CAR.TUCSON_HYBRID_4TH_GEN, CAR.KIA_SPORTAGE_HYBRID_5TH_GEN, CAR.SANTA_CRUZ_1ST_GEN, CAR.KIA_SPORTAGE_5TH_GEN, CAR.GENESIS_GV70_1ST_GEN, CAR.GENESIS_GV70_2021, CAR.KIA_SORENTO_PHEV_4TH_GEN, CAR.GENESIS_GV60_EV_1ST_GEN, CAR.KIA_SORENTO_4TH_GEN, CAR.KIA_NIRO_HEV_2ND_GEN, CAR.KIA_NIRO_EV_2ND_GEN, CAR.GENESIS_GV80, CAR.KIA_CARNIVAL_4TH_GEN}
 
 # The radar does SCC on these cars when HDA I, rather than the camera
-CANFD_RADAR_SCC_CAR = {CAR.GENESIS_GV70_1ST_GEN, CAR.KIA_SORENTO_PHEV_4TH_GEN, CAR.KIA_SORENTO_4TH_GEN, CAR.GENESIS_GV80, CAR.KIA_CARNIVAL_4TH_GEN}
+CANFD_RADAR_SCC_CAR = {CAR.GENESIS_GV70_1ST_GEN, CAR.GENESIS_GV70_2021, CAR.KIA_SORENTO_PHEV_4TH_GEN, CAR.KIA_SORENTO_4TH_GEN, CAR.GENESIS_GV80, CAR.KIA_CARNIVAL_4TH_GEN}
 
 # The camera does SCC on these cars, rather than the radar
 CAMERA_SCC_CAR = {CAR.KONA_EV_2022, }
@@ -1968,6 +1986,7 @@ DBC = {
   CAR.KIA_SPORTAGE_5TH_GEN: dbc_dict('hyundai_canfd', None),
   CAR.KIA_SPORTAGE_HYBRID_5TH_GEN: dbc_dict('hyundai_canfd', None),
   CAR.GENESIS_GV70_1ST_GEN: dbc_dict('hyundai_canfd', None),
+  CAR.GENESIS_GV70_2021: dbc_dict('hyundai_canfd', None),
   CAR.KIA_SORENTO_PHEV_4TH_GEN: dbc_dict('hyundai_canfd', None),
   CAR.GENESIS_GV60_EV_1ST_GEN: dbc_dict('hyundai_canfd', None),
   CAR.KIA_SORENTO_4TH_GEN: dbc_dict('hyundai_canfd', None),
